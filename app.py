@@ -2,7 +2,7 @@ from flask import Flask, make_response, jsonify,request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import db, User, Product, Order, Cart, Address, Transaction, OrderItem
+from models import db, User, Product, Order, Cart, Address, Transaction, OrderItem, Contact
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -204,6 +204,43 @@ def get_all_order_items():
     order_items = OrderItem.query.all()
     order_items_data = [{'id': order_item.id, 'order_id': order_item.order_id, 'product_id': order_item.product_id, 'quantity': order_item.quantity} for order_item in order_items]
     return jsonify(order_items_data), 200
+
+
+@app.route('/contacts', methods=['GET'])
+def get_all_contacts():
+    contacts = Contact.query.all()
+
+    contacts_list = []
+    for contact in contacts:
+        contact_dict = {
+            "id": contact.id,
+            "name": contact.name,
+            "email": contact.email,
+            "message": contact.message,
+        }
+        contacts_list.append(contact_dict)
+
+    return jsonify(contacts_list), 200
+
+
+
+@app.route('/contacts/<int:contact_id>', methods=['GET'])
+def get_contact_by_id(contact_id):
+    contact = Contact.query.filter_by(id=contact_id).first()
+
+    if contact is None:
+        return jsonify({"error": "Contact not found!!"}), 404
+
+    contacts_dict = {
+        "id": contact.id,
+        "name": contact.name,
+        "email": contact.email,
+        "message": contact.message,
+    }
+
+    return jsonify(contacts_dict), 200
+
+
 
 
 
