@@ -206,31 +206,31 @@ def get_all_order_items():
     return jsonify(order_items_data), 200
 
 
-@app.route('/contacts', methods=['GET'])
-def get_all_contacts():
-    contacts = Contact.query.all()
-
-    contacts_list = []
-    for contact in contacts:
-        contact_dict = {
-            "id": contact.id,
-            "name": contact.name,
-            "email": contact.email,
-            "message": contact.message,
-        }
-        contacts_list.append(contact_dict)
-
-    return jsonify(contacts_list), 200
 
 
 
-@app.route('/contacts/<int:contact_id>', methods=['GET'])
-def get_contact_by_id(contact_id):
+
+
+
+@app.route('/contacts/<int:contact_id>', methods=['POST'])
+def update_contact_by_id(contact_id):
+   
     contact = Contact.query.filter_by(id=contact_id).first()
 
     if contact is None:
         return jsonify({"error": "Contact not found!!"}), 404
 
+  
+    data = request.get_json()
+
+    contact.name = data.get('name', contact.name)
+    contact.email = data.get('email', contact.email)
+    contact.message = data.get('message', contact.message)
+
+    
+    db.session.commit()
+
+  
     contacts_dict = {
         "id": contact.id,
         "name": contact.name,
@@ -238,16 +238,7 @@ def get_contact_by_id(contact_id):
         "message": contact.message,
     }
 
-    return jsonify(contacts_dict), 200
-
-
-@app.route('/products', methods=['POST'])
-def create_product():
-    data = request.get_json()
-    new_product = Product(name=data['name'], price=data['price'], image_url=data['imageUrl'])
-    db.session.add(new_product)
-    db.session.commit()
-    return jsonify({'message': 'Product created successfully', 'product': {'id': new_product.id, 'name': new_product.name, 'price': new_product.price, 'image_url': new_product.image_url}}), 201
+    return jsonify(contacts_dict), 201
 
 
 
