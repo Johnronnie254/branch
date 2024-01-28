@@ -241,6 +241,15 @@ def get_contact_by_id(contact_id):
     return jsonify(contacts_dict), 200
 
 
+@app.route('/products', methods=['POST'])
+def create_product():
+    data = request.get_json()
+    new_product = Product(name=data['name'], price=data['price'], image_url=data['imageUrl'])
+    db.session.add(new_product)
+    db.session.commit()
+    return jsonify({'message': 'Product created successfully', 'product': {'id': new_product.id, 'name': new_product.name, 'price': new_product.price, 'image_url': new_product.image_url}}), 201
+
+
 
 
 
