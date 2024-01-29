@@ -1,4 +1,4 @@
-from flask import Flask, make_response, jsonify,request
+from flask import Flask, make_response, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -11,7 +11,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app)
-
 
 @app.route('/')
 def index():
@@ -212,7 +211,7 @@ def get_all_order_items():
 
 
 
-@app.route('/contacts/<int:contact_id>', methods=['POST'])
+@app.route('/contacts', methods=['POST'])
 def update_contact_by_id(contact_id):
    
     contact = Contact.query.filter_by(id=contact_id).first()
@@ -245,4 +244,6 @@ def update_contact_by_id(contact_id):
 
 
 if __name__ == '__main__':
+    from app.admin import admin
+    admin.init_app(app)
     app.run(debug=True)

@@ -26,6 +26,8 @@ class Product(db.Model):
         self.price = price
         self.image_url = image_url
 
+
+
     
 
 class Cart(db.Model):
